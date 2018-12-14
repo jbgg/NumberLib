@@ -10,7 +10,7 @@
 struct number {
 	uint8_t *data;
 	uint32_t ndata;
-	uint8_t sign;
+	int8_t sign;
 };
 
 void freeNumber(struct number *);

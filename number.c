@@ -62,6 +62,18 @@ void copyNumber(struct number *p, struct number n){
 
 
 int setNumber(char *str, struct number *p){
+	int8_t sign;
+	if(str[0] == '-'){
+		sign = -1;
+		str++;
+	}else{
+		sign = 1;
+		if(str[0] == '+')
+			str++;
+	}
+	while(str[0]=='0')
+		str++;
+
 	uint32_t i;
 	for(i=0;str[i]!=0;i++){
 		if(str[i]<'0' || str[i] > '9'){
@@ -84,23 +96,14 @@ int setNumber(char *str, struct number *p){
 
 		i--;
 		l = str[i] >= '0' && str[i] <= '9' ? (uint8_t) (str[i] - '0') : (uint8_t)(str[i] - 'a' + 0xa);
-#ifdef DEBUGG
-		printf(" str[%d] = %c ; l = %02x\n", i, str[i], l);
-#endif /* DEBUG */
 		if(i==0){
 			u=0;
 		}else{
 			i--;
 			u = str[i] >= '0' && str[i] <= '9' ? (uint8_t) (str[i] - '0') : (uint8_t)(str[i] - 'a' + 0xa);
-#ifdef DEBUGG
-		printf(" str[%d] = %c ; u = %02x\n", i, str[i], u);
-#endif /* DEBUG */
 		}
 
 		p->data[n] = (uint8_t) ((u << 4) | l);
-#ifdef DEBUGG
-		printf(" p->data[%d] = %02x\n", n, p->data[n]);
-#endif /* DEBUG */
 		n++;
 
 		if(i==0)
@@ -108,6 +111,8 @@ int setNumber(char *str, struct number *p){
 
 
 	}while(1);
+
+	p->sign = sign;
 
 	return 0;
 
@@ -125,6 +130,7 @@ uint8_t sumByte(uint8_t *r, uint8_t s, uint8_t c){
 }
 
 
+/* TODO: handle sign */
 void sumNumber(struct number *p, struct number n){
 
 	if(p->ndata < n.ndata){
@@ -163,6 +169,9 @@ void printNumber(struct number n){
 	}while(n.data[i]==0);
 	i++;
 #endif
+
+	if(n.sign == -1)
+		printf("-");
 
 	do{
 		i--;
