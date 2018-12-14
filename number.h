@@ -13,7 +13,6 @@ struct number {
 	uint8_t sign;
 };
 
-void initNumber(struct number *);
 void freeNumber(struct number *);
 
 void allocNumber(struct number *, uint32_t);

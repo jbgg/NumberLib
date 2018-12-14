@@ -7,13 +7,6 @@
 
 
 
-void initNumber(struct number *p){
-	p->ndata = 1;
-	p->data = (uint8_t*) malloc(sizeof(uint8_t));
-	p->data[0] = 0;
-	p->sign = 0;
-}
-
 void allocNumber(struct number *p, uint32_t n){
 	p->data = (uint8_t*) malloc(sizeof(uint8_t) * n);
 	p->ndata = n;
@@ -68,7 +61,6 @@ void copyNumber(struct number *p, struct number n){
 }
 
 
-/* TODO: sign */
 int setNumber(char *str, struct number *p){
 	uint32_t i;
 	for(i=0;str[i]!=0;i++){
@@ -79,7 +71,7 @@ int setNumber(char *str, struct number *p){
 		}
 	}
 	if(i==0){
-		initNumber(p);
+		allocNumber(p,1);
 		return 0;
 	}
 	uint32_t n;
