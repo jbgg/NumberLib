@@ -7,6 +7,7 @@
 
 
 
+/* it creates number zero with a specific bytes length */
 void allocNumber(struct number *p, uint32_t n){
 	p->data = (uint8_t*) malloc(sizeof(uint8_t) * n);
 	p->ndata = n;
@@ -23,6 +24,8 @@ void freeNumber(struct number *p){
 		free(p->data);
 }
 
+
+/* it increases the number of bytes */
 void expandNumber(struct number *p, uint32_t k){
 
 	if(k==0)
