@@ -5,12 +5,19 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+/* TODO:
+ *   check output of malloc
+ */
 
 
 /* it creates number zero with a specific bytes length */
 void allocNumber(struct number *p, uint32_t n){
+
+	/* allocate space for number */
 	p->data = (uint8_t*) malloc(sizeof(uint8_t) * n);
 	p->ndata = n;
+
+	/* number is zero */
 	p->sign = 0;
 	uint32_t i;
 	for(i=0;i<n;i++){
@@ -32,21 +39,27 @@ void expandNumber(struct number *p, uint32_t k){
 		return;
 
 
+	/* allocate space */
 	uint8_t *q = (uint8_t*) malloc(sizeof(uint8_t)*(p->ndata+k));
+
 	uint32_t i;
+	/* copy bytes from last memory */
 	for(i=0;i<p->ndata;i++){
 		q[i] = p->data[i];
 	}
 	
+	/* update new data length */
 	p->ndata += k;
 
+	/* most significant bytes are zero */
 	do{
-		k--;
 		q[i] = 0;
 		i++;
+		k--;
 	}while(k!=0);
 
 	free(p->data);
+	/* update new memory */
 	p->data = q;
 
 }
@@ -54,12 +67,51 @@ void expandNumber(struct number *p, uint32_t k){
 
 void copyNumber(struct number *p, struct number n){
 
+	/* init the number as zero with enough memory */
 	allocNumber(p, n.ndata);
+
+	/* copy all info of number */
 	p->ndata = n.ndata;
 	p->sign = n.sign;
 	uint32_t i;
 	for(i=0;i<n.ndata;i++)
 		p->data[i] = n.data[i];
+
+}
+
+
+
+
+
+static uint8_t sumByte(uint8_t *r, uint8_t s, uint8_t c){
+	uint16_t t = *r;
+	t += s;
+	t += c;
+	*r = (uint8_t) (t & 0xff);
+	return (uint8_t) (t >> 8);
+}
+
+
+/* TODO: handle sign */
+void sumNumber(struct number *p, struct number n){
+
+	if(p->ndata < n.ndata){
+		expandNumber(p, n.ndata - p->ndata);
+	}
+
+	uint8_t carry = 0;
+	uint32_t i;
+	for(i=0;i<n.ndata;i++){
+		carry = sumByte(&p->data[i], n.data[i], carry);
+	}
+
+	for(;i<p->ndata;i++){
+		carry = sumByte(&p->data[i], 0, carry);
+	}
+	if(carry != 0){
+		expandNumber(p, 1);
+		sumByte(&p->data[i], 0, carry);
+	}
 
 }
 
@@ -121,42 +173,6 @@ int setNumber(char *str, struct number *p){
 
 
 }
-
-
-
-uint8_t sumByte(uint8_t *r, uint8_t s, uint8_t c){
-	uint16_t t = *r;
-	t += s;
-	t += c;
-	*r = (uint8_t) (t & 0xff);
-	return (uint8_t) (t >> 8);
-}
-
-
-/* TODO: handle sign */
-void sumNumber(struct number *p, struct number n){
-
-	if(p->ndata < n.ndata){
-		expandNumber(p, n.ndata - p->ndata);
-	}
-
-	uint8_t carry = 0;
-	uint32_t i;
-	for(i=0;i<n.ndata;i++){
-		carry = sumByte(&p->data[i], n.data[i], carry);
-	}
-
-	for(;i<p->ndata;i++){
-		carry = sumByte(&p->data[i], 0, carry);
-	}
-	if(carry != 0){
-		expandNumber(p, 1);
-		sumByte(&p->data[i], 0, carry);
-	}
-
-}
-
-
 
 
 void printNumber(struct number n){
