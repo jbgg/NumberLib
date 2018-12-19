@@ -161,11 +161,7 @@ int setNumber(char *str, struct number *p){
 		p->data[n] = (uint8_t) ((u << 4) | l);
 		n++;
 
-		if(i==0)
-			break;
-
-
-	}while(1);
+	}while(i!=0);
 
 	p->sign = sign;
 
