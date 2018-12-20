@@ -47,7 +47,7 @@ void expandNumber(struct number *p, uint32_t k){
 	for(i=0;i<p->ndata;i++){
 		q[i] = p->data[i];
 	}
-	
+
 	/* update new data length */
 	p->ndata += k;
 
@@ -80,7 +80,79 @@ void copyNumber(struct number *p, struct number n){
 }
 
 
+int32_t cmpUnsignedNumber(struct number n, struct number m){
 
+	if(n.sign == 0){
+		/* only check if m is zero or not */
+		if(m.sign == 0)
+			return 0;
+		else
+			return -1;
+	}
+	if(m.sign == 0)
+		return 1; /* n.sign != 0 */
+
+	uint32_t i;
+
+	int32_t d = n.ndata - m.ndata;
+
+	if(d > 0){ /* n.ndata > m.ndata */
+		for(i=n.ndata-1;i>=m.ndata;i--){
+			if(n.data[i] != 0)
+				return 1;
+		}
+	}else if(d < 0){ /* n.ndata > m.ndata */
+		for(i=m.ndata-1;i>=n.ndata;i--){
+			if(m.data[i] != 0)
+				return -1;
+		}
+	}else{ /* n.data == m.data */
+		i = m.ndata-1;
+	}
+
+	/* n.data > 0 and m.data > 0 */
+	i++;
+	do{ /* i!= 0 */
+		i--;
+		if(n.data[i] != m.data[i]){
+			if(n.data[i] > m.data[i])
+				return 1;
+			else
+				return -1; /* n.data[i] < m.data[i] */
+		}
+	}while(i!=0);
+
+	return 0;
+
+}
+
+
+void sumNumber(struct number *p, struct number n){
+
+	if(p->sign == n.sign){
+		sumUnsignedNumber(p,n);
+	}else{
+		int32_t d;
+		struct number r;
+		int8_t sign;
+		d = cmpUnsignedNumber(*p,n);
+		if(d > 0){
+			diffUnsignedNumber(&r, *p, n);
+			sign = p->sign;
+		}else if(d < 0){
+			diffUnsignedNumber(&r, n, *p);
+			sign = n.sign;
+		}else{ /* d == 0 */
+			allocNumber(&r, 1);
+			sign = 0;
+		}
+		freeNumber(p);
+		p->data = r.data;
+		p->ndata = r.ndata;
+		p->sign = sign;
+	}
+
+}
 
 
 static uint8_t sumByte(uint8_t *r, uint8_t s, uint8_t c){
@@ -92,8 +164,7 @@ static uint8_t sumByte(uint8_t *r, uint8_t s, uint8_t c){
 }
 
 
-/* TODO: handle sign */
-void sumNumber(struct number *p, struct number n){
+void sumUnsignedNumber(struct number *p, struct number n){
 
 	if(p->ndata < n.ndata){
 		expandNumber(p, n.ndata - p->ndata);
@@ -112,6 +183,12 @@ void sumNumber(struct number *p, struct number n){
 		expandNumber(p, 1);
 		sumByte(&p->data[i], 0, carry);
 	}
+
+}
+
+
+void diffUnsignedNumber(struct number *r, struct number n, struct number m){
+
 
 }
 

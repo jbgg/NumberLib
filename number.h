@@ -25,8 +25,17 @@ void freeNumber(struct number *);
 /* creates a copy of a number */
 void copyNumber(struct number *, struct number);
 
+/* compare two number, 1 if first arg is greater than second,
+ *   -1 if second arg is greater than first, 
+ *   0 in other case
+ */
+int32_t cmpUnsignedNumber(struct number, struct number);
+
 /* sums two number, result is stored in first argument */
 void sumNumber(struct number *, struct number);
+
+void sumUnsignedNumber(struct number *, struct number);
+void diffUnsignedNumber(struct number *, struct number, struct number);
 
 /* creates a number from a hex format string number */
 int setNumber(char *, struct number *);
