@@ -5,6 +5,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+
+static uint8_t sumByte(uint8_t*, uint8_t, uint8_t);
+static void sumUnsignedNumber(struct number*, struct number);
+static uint8_t diffByte(uint8_t*, uint8_t, uint8_t, uint8_t);
+static void diffUnsignedNumber(struct number*, struct number, struct number);
+
 /* TODO:
  *   check output of malloc
  */
@@ -138,18 +144,15 @@ void sumNumber(struct number *p, struct number n){
 		d = cmpUnsignedNumber(*p,n);
 		if(d > 0){
 			diffUnsignedNumber(&r, *p, n);
-			sign = p->sign;
 		}else if(d < 0){
 			diffUnsignedNumber(&r, n, *p);
-			sign = n.sign;
 		}else{ /* d == 0 */
 			allocNumber(&r, 1);
-			sign = 0;
 		}
 		freeNumber(p);
 		p->data = r.data;
 		p->ndata = r.ndata;
-		p->sign = sign;
+		p->sign = r.sign;
 	}
 
 }
@@ -164,7 +167,7 @@ static uint8_t sumByte(uint8_t *r, uint8_t s, uint8_t c){
 }
 
 
-void sumUnsignedNumber(struct number *p, struct number n){
+static void sumUnsignedNumber(struct number *p, struct number n){
 
 	if(p->ndata < n.ndata){
 		expandNumber(p, n.ndata - p->ndata);
@@ -186,9 +189,24 @@ void sumUnsignedNumber(struct number *p, struct number n){
 
 }
 
+static uint8_t diffByte(uint8_t *r, uint8_t a, uint8_t b, uint8_t c){
+	uint16_t t = a;
+	t = a - b - c;
+	*r = (uint8_t) (t & 0xff);
+	return (uint8_t) ((t >> 8) & 0x1);
+}
 
-void diffUnsignedNumber(struct number *r, struct number n, struct number m){
+static void diffUnsignedNumber(struct number *r, struct number n, struct number m){
 
+	allocNumber(r, n.ndata);
+
+	uint32_t i;
+	uint8_t carry = 0;
+	for(i=0;i<n.ndata;i++){
+		carry = diffByte(&r->data[i], n.data[i], m.data[i], carry);
+	}
+
+	r->sign = n.sign;
 
 }
 

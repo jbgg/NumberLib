@@ -34,9 +34,6 @@ int32_t cmpUnsignedNumber(struct number, struct number);
 /* sums two number, result is stored in first argument */
 void sumNumber(struct number *, struct number);
 
-void sumUnsignedNumber(struct number *, struct number);
-void diffUnsignedNumber(struct number *, struct number, struct number);
-
 /* creates a number from a hex format string number */
 int setNumber(char *, struct number *);
 

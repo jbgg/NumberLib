@@ -10,25 +10,28 @@ int main(){
 	struct number m;
 
 
-	setNumber("0f00", &n);
-	setNumber("-0f10", &m);
+	setNumber("01", &n);
+	setNumber("-0f00", &m);
 
 	printf("n = ");
 	printNumber(n);
 	printf("\n");
 
 	//printf("n.ndata = %d\n", n.ndata);
-	printf("n.sign = %d\n", n.sign);
+	//printf("n.sign = %d\n", n.sign);
 
 	printf("m = ");
 	printNumber(m);
 	printf("\n");
 
 	//printf("m.ndata = %d\n", m.ndata);
-	printf("m.sign = %d\n", m.sign);
+	//printf("m.sign = %d\n", m.sign);
 
 	sumNumber(&n, m);
 
+	printf("n + m = ");
+	printNumber(n);
+	printf("\n");
 
 	return 0;
 }

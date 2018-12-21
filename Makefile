@@ -15,5 +15,6 @@ $(PROG) : $(OBJS)
 
 clean :
 	rm -rf $(OBJS) $(PROG)
+	@rm -rf .*~ *~
 
 
